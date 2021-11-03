@@ -96,60 +96,60 @@
 // //////////////////////
 // Rehearsal
 // //////////////////////
-// 1. Select the button
+// // 1. Select an element (button)
 // const button = document.querySelector("#click-me");
-// // 2. Listen to a click
+// // 2. listen to a click on the button
 // button.addEventListener("click", (event) => {
-//   console.log(event);
-//   // 3. Change the DOM, innerText, class disabled
-//   // event.currentTarget.classList.add("disabled");
-//   event.currentTarget.disabled = true;
+//   // 3. change the DOM (disabled and change text)
 //   event.currentTarget.innerText = "Loading...";
+//   event.currentTarget.disabled = true;
 // });
 // //////////////////////
 // HTTP GET request
 // //////////////////////
-// 1. Select the input, button, list
-var input = document.querySelector("#keyword");
-var search = document.querySelector("#submit");
-var results = document.querySelector("#results"); // 2. Listen to a click on the button
+// 1. Select elements (submit button, keyword input, ul)
+var keyword = document.querySelector("#keyword");
+var submit = document.querySelector("#submit");
+var results = document.querySelector("#results"); // 2. listen to a click on the submit button
 
-search.addEventListener("click", function (event) {
+submit.addEventListener("click", function (event) {
+  // 2.5 Fetch the omdb API
   event.preventDefault();
-  console.log(event); // 2.5 Fetch the OMDBAPI
-
-  var url = "https://www.omdbapi.com/?s=".concat(input.value, "&apikey=adf1f2d7");
+  var url = "https://www.omdbapi.com/?s=".concat(keyword.value, "&apikey=adf1f2d7");
   fetch(url).then(function (response) {
     return response.json();
-  }).then(function (data) {
+  }) // parse JSON to JavaScript
+  .then(function (data) {
     console.log(data);
-    var movies = data.Search; // 3. Change the DOM, display the movies
+    var movies = data.Search;
+    results.innerHTML = ""; // 3. Change the DOM ( display the movies)
 
-    results.innerHTML = "";
     movies.forEach(function (movie) {
-      results.insertAdjacentHTML("beforeend", "<li class='list-inline-item'>\n          <img src=\"".concat(movie.Poster, "\" alt=\"poster\" />\n          <p>").concat(movie.Title, "</p>\n        </li>"));
+      results.insertAdjacentHTML("beforeend", "<li class='list-inline-item'>\n            <img src=".concat(movie.Poster, " alt=\"movie\">\n            <p>").concat(movie.Title, "</p>\n          </li>"));
     });
   });
+  console.log("I am in a different timeline!");
 }); // //////////////////////
 // HTTP POST request
 // //////////////////////
 
 var searchAlgoliaPlaces = function searchAlgoliaPlaces(event) {
-  var someData = {
-    query: event.currentTarget.value
-  };
   fetch("https://places-dsn.algolia.net/1/places/query", {
     method: "POST",
-    body: JSON.stringify(someData)
+    body: JSON.stringify({
+      query: event.currentTarget.value
+    })
   }).then(function (response) {
     return response.json();
   }).then(function (data) {
     console.log(data.hits); // Look at local_names.default
   });
-};
+}; // 1. Select search input
 
-var searchInput = document.querySelector("#search");
-searchInput.addEventListener("keyup", searchAlgoliaPlaces);
+
+var input = document.querySelector("#search"); // 2. Listening to a keyup on the search
+
+input.addEventListener("keyup", searchAlgoliaPlaces);
 
 /***/ })
 
